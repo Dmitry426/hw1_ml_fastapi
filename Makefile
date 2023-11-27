@@ -18,3 +18,6 @@ build: check_and_rename_env
 	docker compose build
 	@echo "Waiting for 15 seconds..."
 	@sleep 15
+
+test:
+	pynton3 run_test.py
