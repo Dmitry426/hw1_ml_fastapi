@@ -1,0 +1,131 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/parser/Dockerfile
+      target: development
+    command: [ "python"  , "-m", "app" ]
+    environment:
+      DEBUG: 'True'
+      POSTGRES_HOST: postgres
+      SETTINGS_LOG_FILE: 'True'
+    volumes:
+      - "./app:/src/app"
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD" ,"nc", "-vz", "-w1", "localhost", "8000" ]
+      interval: 5s
+      timeout: 20s
+      retries: 100
+    restart: on-failure
+
+  minio:
+    container_name: minio-container
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    command: minio server /data --console-address ":9001"
+    volumes:
+      - minio:/data
+    environment:
+      MINIO_ROOT_USER: "airflow"
+      MINIO_ROOT_PASSWORD: "airflow123"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: on-failure
+
+
+  mc-service:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    restart: on-failure
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio-container:9000 airflow airflow123;
+      /usr/bin/mc mb myminio/mlflow;
+      /usr/bin/mc anonymous  set public myminio/mlflow;
+      "
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/parser/Dockerfile
+      target: development
+    command: celery -A app.services.celery worker --uid=nobody --gid=nogroup --loglevel=info
+    volumes:
+      - ./app:/src/app
+    environment:
+      REDIS_HOST: redis
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      web:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:14.0-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+      - ./Configs/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "$POSTGRES_USER",'-d','$POSTGRES_DB' ]
+      interval: 5s
+      retries: 5
+    restart: on-failure
+
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    volumes:
+      - "redis_data:/bitnami/redis/data"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: on-failure
+
+  ml_flow1:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/parser/Dockerfile
+      target: development
+    env_file:
+      - ./.env
+    ports:
+      - "5000:5000"
+    command: mlflow server --host 0.0.0.0 --backend-store-uri postgresql://test:test@postgres:5432/mlflow
+      --default-artifact-root s3://mlflow --serve-artifacts
+    restart: on-failure
+
+
+volumes:
+  postgres:
+    driver: local
+  redis_data:
+    driver: local
+  minio:
+    driver: local
