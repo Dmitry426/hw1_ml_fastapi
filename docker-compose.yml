@@ -121,7 +121,6 @@ services:
       --default-artifact-root s3://mlflow --serve-artifacts
     restart: on-failure
 
-
 volumes:
   postgres:
     driver: local

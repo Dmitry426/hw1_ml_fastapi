@@ -8,9 +8,8 @@ from pydantic import BaseModel
 
 from .settings import TestSettings
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class HTTPResponse(BaseModel):
     body: Any
@@ -35,8 +34,6 @@ def settings_fixture() -> TestSettings:
 async def http_client_fixture(settings) -> ClientSession:
     """Represents HTTP client fixture.
 
-    Add dependency fixtures `postgres_client` and `redis_client` to
-    check they are ready to work.
     """
     async with ClientSession(
         base_url=f"http://{settings.url_settings.host}:{settings.url_settings.port}"

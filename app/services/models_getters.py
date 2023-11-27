@@ -7,13 +7,14 @@ import mlflow.sklearn
 from fastapi import HTTPException
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Lasso, LinearRegression
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 
 from app.settings.settings import settings
 
 ModelRegressor = Union[
-    LinearRegression, DecisionTreeRegressor, RandomForestRegressor, SVR, Lasso
+    LinearRegression, DecisionTreeRegressor, RandomForestRegressor, SVR, Lasso, StandardScaler
 ]
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,15 @@ class LassoGrid(ModelGetter):
     sk_model_name = "lasso_grid"
 
 
+class Scaler(ModelGetter):
+    sk_model_name = "scaler"
+
+
 @lru_cache
 def get_lasso_grid_model():
     return LassoGrid().get_model()
+
+
+@lru_cache
+def get_scaler():
+    return Scaler().get_model()

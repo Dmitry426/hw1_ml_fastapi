@@ -19,10 +19,10 @@ class CarModelLasso(BaseModel):
     transmission: Optional[str]
     owner: Optional[str]
     mileage: Optional[int]
-    engine: Optional[str]
+    engine: Union[str, int]
     max_power: Union[str, float]
-    torque_nm: Union[str, float]
-    max_rpm: float
+    torque_Nm: Union[str, float]
+    max_torque_rpm: float
     seats: float
 
     @field_validator("max_power")
@@ -37,7 +37,16 @@ class CarModelLasso(BaseModel):
         else:
             return value
 
-    @field_validator("torque_nm")
+    @field_validator("engine")
+    @classmethod
+    def parse_engine(cls, value: Union[str, float]) -> float:
+        if isinstance(value, str):
+            engine_value = int(value.split(" ")[0])
+            return engine_value
+        else:
+            return value
+
+    @field_validator("torque_Nm")
     @classmethod
     def parse_torque(cls, value: Union[str, float]) -> float:
         if isinstance(value, str):

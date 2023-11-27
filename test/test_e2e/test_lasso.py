@@ -7,37 +7,38 @@ import pytest
 from app.serializers.car_model import CarModelLasso
 
 PATH = "/api/v1/lasso"
+
 item_instance = CarModelLasso(
     name="Car Model",
-    year=1990,
-    selling_price=0,
-    km_driven=50000,
+    year=2005,
+    selling_price=11110,
+    km_driven=100000,
     fuel="Petrol",
     seller_type="Dealer",
     transmission="Manual",
     owner="First Owner",
     mileage=20,
-    engine="1500 cc",
-    max_power="100 bhp",
-    torque_nm="120 Nm",
-    max_rpm=3500,
-    seats=5.0,
+    engine="2500 cc",
+    max_power="90 bhp",
+    torque_Nm="120 Nm",
+    max_torque_rpm=4500,
+    seats=4.0,
 )
 
 item_instance2 = CarModelLasso(
     name="Honda",
-    year=1900,
-    selling_price=250000,
-    km_driven=600,
+    year=2000,
+    selling_price=23423,
+    km_driven=100000,
     fuel="Petrol",
     seller_type="Dealer",
     transmission="Manual",
     owner="First Owner",
-    mileage=40,
-    engine="1500 cc",
+    mileage=10,
+    engine="2500 cc",
     max_power="100 bhp",
-    torque_nm="120 Nm",
-    max_rpm=5500,
+    torque_Nm="120 Nm",
+    max_torque_rpm=4500,
     seats=4.0,
 )
 
@@ -47,16 +48,24 @@ cars = [item_instance2.model_dump(), item_instance.model_dump()]
 @pytest.mark.asyncio
 class TestLasso:
     async def test_predict(self, make_request):
+        logger.info(f"Test predict data parsed and validated "
+                    f"data {item_instance.model_dump()}")
         response = await make_request(
             method="POST", url=f"{PATH}/predict_item", json=item_instance.model_dump()
         )
-        print(response.body)
         logger.info("Response status : %s", response.status)
+        assert response.status == HTTPStatus.OK
+        logger.info(f"Model prediction result {response.body} ")
 
-    async def test_create_user(self, make_request):
+    async def test_predict_many(self, make_request):
+        logger.info(f"Test predict many data parsed and validated {cars}")
         response = await make_request(
             method="POST",
             url=f"{PATH}/predict_items",
             json=cars,
         )
+        logger.info("Response status : %s", response.status)
         assert response.status == HTTPStatus.OK
+        logger.info(f"Model prediction result {response.body} ")
+
+

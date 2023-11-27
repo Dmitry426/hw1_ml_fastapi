@@ -10,8 +10,9 @@ class MlflowRuns(BaseSettings):
     class Config:
         env_prefix = "MLFLOW_RUNS_"
 
-    lasso_grid: str = "s3://mlflow/Lasso_experiment_T/ad005251a9d942e2b4d13b6bd3083d3e/artifacts/LassoGrid"
+    lasso_grid: str = "s3://mlflow/Lasso_experiment/245a6b0efba24c60a25cbdf25b06b6fc/artifacts/LassoGrid"
     ridge_model: str = "s3://mlflow/Ridge_experiment_T/e3055475ba084a289b36ef4cb2584b6f/artifacts/Ridge"
+    scaler: str = "s3://mlflow/Lasso_experiment/245a6b0efba24c60a25cbdf25b06b6fc/artifacts/Scaler"
 
 
 class MLFLOW(BaseSettings):
