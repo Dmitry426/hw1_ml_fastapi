@@ -48,10 +48,10 @@ class Scaler(ModelGetter):
 
 
 @lru_cache
-def get_lasso_grid_model():
+def get_lasso_grid_model() -> Lasso:
     return LassoGrid().get_model()
 
 
 @lru_cache
-def get_scaler():
+def get_scaler() -> StandardScaler:
     return Scaler().get_model()

@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter
 
 from app.serializers.car_model import CarModelLasso
 from app.services.model_predictors import predict_reg_lasso
@@ -13,7 +13,6 @@ router = APIRouter()
 @router.post("/predict_item")
 async def predict_item(item: CarModelLasso) -> float:
     predict = predict_reg_lasso(item)
-    logger.error(predict)
     return predict
 
 
