@@ -46,7 +46,7 @@ class UvicornURL(BaseSettings):
         env_prefix = "UVICORN_"
 
     host: str = "0.0.0.0"
-    port: str = "8001"
+    port: str = "8000"
 
 
 class ProjectSettings(BaseSettings):

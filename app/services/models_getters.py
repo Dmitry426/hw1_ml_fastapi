@@ -59,14 +59,14 @@ class ModelGetter(AbstractModelGetter):
         return model
 
     def _load_local_model(self):
-        """Try getting local model in cas S3 is not available"""
+        """Try getting local model in case S3 is not available"""
         try:
             model_path = LOCAL_MODELS_PATH + f"/{self.sk_model_name}" + "/model.pkl"
             with open(model_path, 'rb') as f:
                 model = pickle.load(f)
             return model
         except OSError:
-            logger.warning(
+            logger.error(
                 "Error getting local models ."
             )
             raise HTTPException(500, detail="Error getting model ")
