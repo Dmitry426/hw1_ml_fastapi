@@ -13,10 +13,10 @@ flavors:
     serialization_format: cloudpickle
     sklearn_version: 1.3.2
 mlflow_version: 2.8.1
-model_size_bytes: 3140
-model_uuid: 279bc5aa79064475839cae2d80b6817d
+model_size_bytes: 3602
+model_uuid: eeed777405e040b5b789a6302937ee5d
 signature:
   inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1, 8]}}]'
   outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
   params: null
-utc_time_created: '2023-11-26 17:19:49.767344'
+utc_time_created: '2023-11-29 19:41:19.772420'

@@ -10,9 +10,9 @@ class MlflowRuns(BaseSettings):
     class Config:
         env_prefix = "MLFLOW_RUNS_"
 
-    lasso_grid: str = "s3://mlflow/Lasso_experiment/245a6b0efba24c60a25cbdf25b06b6fc/artifacts/LassoGrid"
-    ridge_model: str = "s3://mlflow/Ridge_experiment_T/e3055475ba084a289b36ef4cb2584b6f/artifacts/Ridge"
-    scaler: str = "s3://mlflow/Lasso_experiment/245a6b0efba24c60a25cbdf25b06b6fc/artifacts/Scaler"
+    lasso_grid: str = "s3://mlflow/Lasso_experiment/245a6b0efba24c60a25cbdf25b06b6fc/artifacts/lasso_grid"
+    ridge_model: str = "s3://mlflow/Ridge_experiment_T/e3055475ba084a289b36ef4cb2584b6f/artifacts/ridge"
+    lasso_grid_scaler: str = "s3://mlflow/Lasso_experiment/245a6b0efba24c60a25cbdf25b06b6fc/artifacts/Scaler"
 
 
 class MLFLOW(BaseSettings):
@@ -21,15 +21,6 @@ class MLFLOW(BaseSettings):
 
     tracking_uri: str = "postgresql://test:test@localhost:5432/mlflow"
     s3_endpoint_url: str = "http://localhost:9000"
-
-
-class AWS(BaseSettings):
-    class Config:
-        env_prefix = "AWS_"
-
-    access_key_id: str = "airflow"
-    secret_access_key: str = "airflow123"
-    default_region: str = "eu-central-1"
 
 
 class Celery(BaseSettings):
@@ -55,7 +46,7 @@ class UvicornURL(BaseSettings):
         env_prefix = "UVICORN_"
 
     host: str = "0.0.0.0"
-    port: str = "8000"
+    port: str = "8001"
 
 
 class ProjectSettings(BaseSettings):
@@ -64,9 +55,10 @@ class ProjectSettings(BaseSettings):
     class Config:
         env_prefix = "SETTINGS_"
 
-    base_dir: str = os.path.dirname(os.path.abspath(__file__))
+    base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     project_name: str = "ml_fastapi_hw"
     log_file: bool = False
+    models_path: str = "/research/models"
 
 
 class Settings(BaseSettings):
@@ -74,7 +66,6 @@ class Settings(BaseSettings):
     project: ProjectSettings = ProjectSettings()
     redis: Redis = Redis()
     celery: Celery = Celery()
-    aws: AWS = AWS()
     mlflow: MLFLOW = MLFLOW()
     runs: MlflowRuns = MlflowRuns()
 

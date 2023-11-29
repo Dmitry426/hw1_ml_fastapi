@@ -11,6 +11,7 @@ from .settings import TestSettings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class HTTPResponse(BaseModel):
     body: Any
     headers: Dict[str, Any]
@@ -36,7 +37,7 @@ async def http_client_fixture(settings) -> ClientSession:
 
     """
     async with ClientSession(
-        base_url=f"http://{settings.url_settings.host}:{settings.url_settings.port}"
+            base_url=f"http://{settings.url_settings.host}:{settings.url_settings.port}"
     ) as session:
         yield session
 
@@ -46,11 +47,11 @@ def make_request_fixture(http_client: ClientSession):
     """Make HTTP-request"""
 
     async def inner(
-        method: str,
-        url: str,
-        params: Optional[Dict[str, Any]] = None,
-        json: Optional[Dict[str, Any]] = None,
-        jwt: Optional[str] = None,
+            method: str,
+            url: str,
+            params: Optional[Dict[str, Any]] = None,
+            json: Optional[Dict[str, Any]] = None,
+            jwt: Optional[str] = None,
     ) -> HTTPResponse:
         params = params or {}
         json = json or {}
@@ -62,7 +63,7 @@ def make_request_fixture(http_client: ClientSession):
         logger.debug("URL: %s", url)
 
         async with http_client.request(
-            method, url, params=params, json=json, headers=headers
+                method, url, params=params, json=json, headers=headers
         ) as response:
             body = await response.json()
             logger.warning("Response: %s", body)

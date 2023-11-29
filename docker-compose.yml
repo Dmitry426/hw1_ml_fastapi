@@ -9,8 +9,10 @@ services:
       DEBUG: 'True'
       POSTGRES_HOST: postgres
       SETTINGS_LOG_FILE: 'True'
+      SETTINGS_LOCAL_MODELS_PATH: models
     volumes:
       - "./app:/src/app"
+      - "./research/models:/src/models"
     ports:
       - "8000:8000"
     env_file:
