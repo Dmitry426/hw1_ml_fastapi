@@ -24,7 +24,7 @@ LOGGING = {
             "level": "INFO",
             "formatter": "json",
             "class": "logging.FileHandler",
-            "filename": log_dir / "parser.json",
+            "filename": log_dir / "app.json",
         },
         "console": {
             "level": "DEBUG",

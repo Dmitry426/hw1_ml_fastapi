@@ -2,7 +2,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./Dockerfiles/parser/Dockerfile
+      dockerfile: ./Dockerfiles/app/Dockerfile
       target: development
     command: [ "python"  , "-m", "app" ]
     environment:
@@ -63,7 +63,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: ./Dockerfiles/parser/Dockerfile
+      dockerfile: Dockerfiles/app/Dockerfile
       target: development
     command: celery -A app.services.celery worker --uid=nobody --gid=nogroup --loglevel=info
     volumes:
@@ -113,7 +113,7 @@ services:
   ml_flow1:
     build:
       context: .
-      dockerfile: ./Dockerfiles/parser/Dockerfile
+      dockerfile: ./Dockerfiles/app/Dockerfile
       target: development
     env_file:
       - ./.env
